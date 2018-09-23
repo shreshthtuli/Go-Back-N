@@ -28,9 +28,9 @@ class SimpleTopo( Topo ):
         # Initialize topology
         Topo.__init__( self )
 
-        h1 = net.addHost('h1', ip='0.0.0.1')
-        h2 = net.addHost('h2', ip='0.0.0.2')
-        s1 = net.addSwitch('s1')
+        h1 = self.addHost('h1', ip='0.0.0.1')
+        h2 = self.addHost('h2', ip='0.0.0.2')
+        s1 = self.addSwitch('s1')
 
         self.addLink(h1, s1)
         self.addLink(h2, s1)   
