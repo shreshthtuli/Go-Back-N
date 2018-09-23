@@ -4,6 +4,7 @@ from mininet.node import CPULimitedHost
 from mininet.link import TCLink
 from mininet.util import dumpNodeConnections
 from mininet.log import setLogLevel
+from topo import net
 
 h1 = net.get('h1')
 # h2 = net.get('h2')
