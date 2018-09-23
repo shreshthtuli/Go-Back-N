@@ -6,7 +6,7 @@ Authors:
     - Samarth Aggarwal
 
 Usage-
-    python3 host.py --port port_num file_to_send file_to_write
+    python3 host.py 0_or_1 file_to_send file_to_write
     
 '''
 import packet
