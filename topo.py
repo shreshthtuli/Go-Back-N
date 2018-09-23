@@ -31,7 +31,7 @@ class LinearTopo( Topo ):
         hosts = []
         switches = []
 
-        for x in range(0, 10):
+        for x in range(0, 2):
 
             # Add hosts and switches
             hosts.append(self.addHost( 'h%s' % (x+1) ))
