@@ -15,13 +15,14 @@ import sys
 import _thread
 import time
 import udt
+import random
 
 from timer import Timer
 
 PACKET_SIZE = 1
 SLEEP_INTERVAL = 0.05
 TIMEOUT_INTERVAL = 0.5
-WINDOW_SIZE = 4
+WINDOW_SIZE = 7
 
 # Shared resources across threads
 base = 0
@@ -50,6 +51,7 @@ def send(sock, filename):
     packets = []
     seq_num = 0
     while True:
+        PACKET_SIZE = random.randint(32, 221)
         data = file.read(PACKET_SIZE)
         if not data:
             break

@@ -9,7 +9,7 @@ Usage:
 To specify parameters use: --link tc,bw=10,delay=3,loss=2,max_queue_size=3
 
 Example : for ring topology with bandwidth limited to 2:
-	- sudo mn --custom topo.py --topo linear --controller=remote,ip=127.0.0.1 --link tc,bw=10
+	- sudo mn --custom topo.py --topo linear --controller=remote,ip=127.0.0.1 --link tc,bw=1,delay=3,loss=1
 
 """
 
