@@ -1,4 +1,14 @@
-# sender.py - The sender in the reliable data transfer protocol
+'''
+
+Host file for sending and receiving data using Go Back N protocol
+Authors:
+    - Shreshth Tuli
+    - Samarth Aggarwal
+
+Usage-
+    python3 host.py --port port_num file_to_send file_to_write
+    
+'''
 import packet
 import socket
 import sys
@@ -9,8 +19,6 @@ import udt
 from timer import Timer
 
 PACKET_SIZE = 512
-RECEIVER_ADDR = ('localhost', 8080)
-SENDER_ADDR = ('localhost', 0)
 SLEEP_INTERVAL = 0.05
 TIMEOUT_INTERVAL = 0.5
 WINDOW_SIZE = 4
@@ -62,6 +70,7 @@ def send(sock, filename):
         # Send all the packets in the window
         while next_to_send < base + window_size:
             print('Sending packet', next_to_send)
+            print('Sending to ', RECEIVER_ADDR)
             udt.send(packets[next_to_send], sock, RECEIVER_ADDR)
             next_to_send += 1
 
@@ -105,7 +114,7 @@ def receive(sock):
 
     expected_num = 0
     while True:
-        pkt, _ = udt.recv(sock);
+        pkt, addr = udt.recv(sock);
         seq_num, ack, data = packet.extract(pkt)
 
         # If we get an ACK for the first in-flight packet
@@ -119,7 +128,7 @@ def receive(sock):
                 mutex.release()
 
         else:
-            print('Gor DATA', seq_num)
+            print('Got DATA', seq_num)
             if seq_num == expected_num:
                 print('Got expected packet')
                 print('Sending ACK', expected_num)
@@ -135,14 +144,20 @@ def receive(sock):
 
 # Main function
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Expected filename as command line argument')
-        exit()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    
+    RECEIVER_ADDR = ('localhost', 8080)
+    SENDER_ADDR = ('localhost', 0)
+    if(sys.argv[1] == 1):
+        RECEIVER_ADDR = ('localhost', 0)
+        SENDER_ADDR = ('localhost', 8080)
+    
     sock.bind(SENDER_ADDR)
-    filename = sys.argv[1]
-    writefilename = sys.argv[2]
+
+    filename = sys.argv[2]
+    writefilename = sys.argv[3]
 
     send(sock, filename)
     sock.close()

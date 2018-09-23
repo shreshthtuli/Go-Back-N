@@ -14,4 +14,4 @@ def make_empty():
 def extract(packet):
     seq_num = int.from_bytes(packet[0:4], byteorder = 'little', signed = True)
     ack = int.from_bytes(packet[4:5], byteorder = 'little', signed = True)
-    return seq_num, ack, packet[4:]
+    return seq_num, ack, packet[5:]
