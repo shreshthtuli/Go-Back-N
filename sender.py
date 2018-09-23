@@ -97,18 +97,41 @@ def receive(sock):
     global base
     global send_timer
 
+    try:
+        file = open(writefilename, 'wb')
+    except IOError:
+        print('Unable to open', writefilename)
+        return
+
+    expected_num = 0
     while True:
         pkt, _ = udt.recv(sock);
-        seq_num, ack, _ = packet.extract(pkt);
+        seq_num, ack, data = packet.extract(pkt)
 
         # If we get an ACK for the first in-flight packet
-        print('Got ACK', ack)
-        if (seq_num >= base):
-            mutex.acquire()
-            base = ack + 1
-            print('Base updated', base)
-            send_timer.stop()
-            mutex.release()
+        if(ack >= 1):
+            print('Got ACK', seq_num)
+            if (seq_num >= base):
+                mutex.acquire()
+                base = ack + 1
+                print('Base updated', base)
+                send_timer.stop()
+                mutex.release()
+
+        else:
+            print('Gor DATA', seq_num)
+            if seq_num == expected_num:
+                print('Got expected packet')
+                print('Sending ACK', expected_num)
+                pkt = packet.make(expected_num, 1)
+                udt.send(pkt, sock, addr)
+                expected_num += 1
+                file.write(data)
+            else:
+                print('Sending ACK', expected_num - 1)
+                pkt = packet.make(expected_num - 1, 1)
+                udt.send(pkt, sock, addr)
+
 
 # Main function
 if __name__ == '__main__':
@@ -119,6 +142,7 @@ if __name__ == '__main__':
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(SENDER_ADDR)
     filename = sys.argv[1]
+    writefilename = sys.argv[2]
 
     send(sock, filename)
     sock.close()
