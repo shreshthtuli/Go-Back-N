@@ -4,12 +4,12 @@ Mininet Topologies with 2 nodes
 Author : Shreshth Tuli
 
 Usage:
-    - sudo mn --custom topo.py
+    - sudo mn --custom topo.py --controller=remote,ip=127.0.0.1
 
 To specify parameters use: --link tc,bw=10,delay=3,loss=2,max_queue_size=3
 
 Example : for ring topology with bandwidth limited to 2:
-	- sudo mn --custom topos.py --controller=remote,ip=127.0.0.1 --link tc,bw=10
+	- sudo mn --custom topo.py --controller=remote,ip=127.0.0.1 --link tc,bw=10
 
 """
 
