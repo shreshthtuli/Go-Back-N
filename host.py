@@ -158,7 +158,7 @@ if __name__ == '__main__':
         RECEIVER_ADDR = ('localhost', 1200)
         SENDER_ADDR = ('localhost', 8080)
     
-    print SENDER_ADDR;
+    print(SENDER_ADDR);
     sock.bind(SENDER_ADDR)
 
     filename = sys.argv[2]
