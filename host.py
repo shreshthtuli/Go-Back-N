@@ -18,7 +18,7 @@ import udt
 
 from timer import Timer
 
-PACKET_SIZE = 512
+PACKET_SIZE = 1
 SLEEP_INTERVAL = 0.05
 TIMEOUT_INTERVAL = 0.5
 WINDOW_SIZE = 4
@@ -122,7 +122,7 @@ def receive(sock):
             print('Got ACK', seq_num)
             if (seq_num >= base):
                 mutex.acquire()
-                base = ack + 1
+                base = seq_num + 1
                 print('Base updated', base)
                 send_timer.stop()
                 mutex.release()
@@ -131,12 +131,14 @@ def receive(sock):
             print('Got DATA', seq_num)
             if seq_num == expected_num:
                 print('Got expected packet')
+                print('Count : ', expected_num)
                 print('Sending ACK', expected_num)
                 pkt = packet.make(expected_num, 1)
                 udt.send(pkt, sock, addr)
                 expected_num += 1
                 file.write(data)
             else:
+                print('Did not get expected packet', expected_num)
                 print('Sending ACK', expected_num - 1)
                 pkt = packet.make(expected_num - 1, 1)
                 udt.send(pkt, sock, addr)
@@ -149,11 +151,12 @@ if __name__ == '__main__':
 
     
     RECEIVER_ADDR = ('localhost', 8080)
-    SENDER_ADDR = ('localhost', 0)
-    if(sys.argv[1] == 1):
-        RECEIVER_ADDR = ('localhost', 0)
+    SENDER_ADDR = ('localhost', 1200)
+    if(sys.argv[1] == '1'):
+        RECEIVER_ADDR = ('localhost', 1200)
         SENDER_ADDR = ('localhost', 8080)
     
+    print SENDER_ADDR;
     sock.bind(SENDER_ADDR)
 
     filename = sys.argv[2]
