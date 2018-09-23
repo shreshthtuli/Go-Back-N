@@ -23,7 +23,10 @@ def perfTest():
     net.pingAll()
     print "Testing bandwidth between h1 and h4"
     h1, h2 = net.get( 'h1', 'h2' )
-    net.iperf( (h1, h2) )
+    # net.iperf( (h1, h2) )
+    h1.cmd('python3 host.py 0 README.md a.txt')
+    h2.cmd('python3 host.py 1 README.md a.txt')
+    
     net.stop()
 
 if _name_ == '_main_':
