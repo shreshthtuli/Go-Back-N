@@ -98,6 +98,7 @@ def send(sock, filename):
             next_to_send = base
         else:
             print('Shifting window')
+            print('Number of Timeouts', timeouts)
             window_size = set_window_size(num_packets)
         mutex.release()
 
