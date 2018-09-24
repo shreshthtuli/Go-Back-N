@@ -21,7 +21,7 @@ from timer import Timer
 
 PACKET_SIZE = 1
 SLEEP_INTERVAL = 0.05
-TIMEOUT_INTERVAL = 0.5
+TIMEOUT_INTERVAL = 0.1
 WINDOW_SIZE = 7
 timeouts = 0
 
