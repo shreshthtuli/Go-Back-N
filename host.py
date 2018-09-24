@@ -132,6 +132,7 @@ def receive(sock):
         if(len(pkt) == 0):
             print('Number of Timeouts', timeouts)
             print('Last got ack', expected_num-1)
+            sys.exit(0)
         if(ack >= 1):
             print('Got ACK', seq_num)
             if (seq_num >= base):
