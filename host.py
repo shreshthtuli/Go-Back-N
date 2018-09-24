@@ -24,6 +24,7 @@ SLEEP_INTERVAL = 0.05
 TIMEOUT_INTERVAL = 0.1
 WINDOW_SIZE = 7
 timeouts = 0
+loss = 0
 
 # Shared resources across threads
 base = 0
@@ -75,7 +76,7 @@ def send(sock, filename):
         while next_to_send < base + window_size:
             print('Sending packet', next_to_send)
             print('Sending to ', RECEIVER_ADDR)
-            udt.send(packets[next_to_send], sock, RECEIVER_ADDR)
+            udt.send(packets[next_to_send], sock, RECEIVER_ADDR, loss)
             next_to_send += 1
 
         # Start the timer
@@ -92,7 +93,7 @@ def send(sock, filename):
 
         if send_timer.timeout():
             # Looks like we timed out
-            timouts = timeouts + 1
+            timeouts = timeouts + 1
             print('Timeout', timeouts)
             send_timer.stop();
             next_to_send = base
@@ -103,7 +104,7 @@ def send(sock, filename):
         mutex.release()
 
     # Send empty packet as sentinel
-    udt.send(packet.make_empty(), sock, RECEIVER_ADDR)
+    udt.send(packet.make_empty(), sock, RECEIVER_ADDR, loss)
     file.close()
     
 # Receive thread
@@ -123,6 +124,8 @@ def receive(sock):
         pkt, addr = udt.recv(sock);
         seq_num, ack, data = packet.extract(pkt)
 
+        print('Got packet with address = ',addr)
+
         # If we get an ACK for the first in-flight packet
         if(ack >= 1):
             print('Got ACK', seq_num)
@@ -136,18 +139,22 @@ def receive(sock):
         else:
             print('Got DATA', seq_num)
             if seq_num == expected_num:
+                mutex.acquire()
                 print('Got expected packet')
                 print('Count : ', expected_num)
                 print('Sending ACK', expected_num)
                 pkt = packet.make(expected_num, 1)
-                udt.send(pkt, sock, addr)
+                udt.send(pkt, sock, addr, loss)
                 expected_num += 1
                 file.write(data)
+                mutex.release()
             else:
+                mutex.acquire()
                 print('Did not get expected packet', expected_num)
                 print('Sending ACK', expected_num - 1)
                 pkt = packet.make(expected_num - 1, 1)
-                udt.send(pkt, sock, addr)
+                udt.send(pkt, sock, addr, loss)
+                mutex.release()
 
 
 # Main function
@@ -169,6 +176,7 @@ if __name__ == '__main__':
 
     filename = sys.argv[3]
     writefilename = sys.argv[4]
-
+    loss = int(sys.argv[5])
+    
     send(sock, filename)
     sock.close()

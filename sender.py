@@ -46,6 +46,7 @@ def send(sock, filename):
         if not data:
             break
         packets.append(packet.make(seq_num, data))
+        packets.append(packet.make(seq_num, 0, data))
         seq_num += 1
 
     num_packets = len(packets)
@@ -97,6 +98,7 @@ def receive(sock):
     global base
     global send_timer
 
+<<<<<<< HEAD
     while True:
         pkt, _ = udt.recv(sock);
         ack, _ = packet.extract(pkt);
@@ -109,6 +111,43 @@ def receive(sock):
             print('Base updated', base)
             send_timer.stop()
             mutex.release()
+=======
+    try:
+        file = open(writefilename, 'wb')
+    except IOError:
+        print('Unable to open', writefilename)
+        return
+
+    expected_num = 0
+    while True:
+        pkt, _ = udt.recv(sock);
+        seq_num, ack, data = packet.extract(pkt)
+
+        # If we get an ACK for the first in-flight packet
+        if(ack >= 1):
+            print('Got ACK', seq_num)
+            if (seq_num >= base):
+                mutex.acquire()
+                base = ack + 1
+                print('Base updated', base)
+                send_timer.stop()
+                mutex.release()
+
+        else:
+            print('Gor DATA', seq_num)
+            if seq_num == expected_num:
+                print('Got expected packet')
+                print('Sending ACK', expected_num)
+                pkt = packet.make(expected_num, 1)
+                udt.send(pkt, sock, addr)
+                expected_num += 1
+                file.write(data)
+            else:
+                print('Sending ACK', expected_num - 1)
+                pkt = packet.make(expected_num - 1, 1)
+                udt.send(pkt, sock, addr)
+
+>>>>>>> 858878fae7da0d64ea1182145c9e66af17289a60
 
 # Main function
 if __name__ == '__main__':
@@ -119,6 +158,10 @@ if __name__ == '__main__':
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(SENDER_ADDR)
     filename = sys.argv[1]
+<<<<<<< HEAD
+=======
+    writefilename = sys.argv[2]
+>>>>>>> 858878fae7da0d64ea1182145c9e66af17289a60
 
     send(sock, filename)
     sock.close()

@@ -21,20 +21,32 @@ def receive(sock, filename):
         pkt, addr = udt.recv(sock)
         if not pkt:
             break
+<<<<<<< HEAD
         seq_num, data = packet.extract(pkt)
+=======
+        seq_num, ack, data = packet.extract(pkt)
+>>>>>>> 858878fae7da0d64ea1182145c9e66af17289a60
         print('Got packet', seq_num)
         
         # Send back an ACK
         if seq_num == expected_num:
             print('Got expected packet')
             print('Sending ACK', expected_num)
+<<<<<<< HEAD
             pkt = packet.make(expected_num)
+=======
+            pkt = packet.make(expected_num, 1)
+>>>>>>> 858878fae7da0d64ea1182145c9e66af17289a60
             udt.send(pkt, sock, addr)
             expected_num += 1
             file.write(data)
         else:
             print('Sending ACK', expected_num - 1)
+<<<<<<< HEAD
             pkt = packet.make(expected_num - 1)
+=======
+            pkt = packet.make(expected_num - 1, 1)
+>>>>>>> 858878fae7da0d64ea1182145c9e66af17289a60
             udt.send(pkt, sock, addr)
 
     file.close()
