@@ -23,6 +23,7 @@ PACKET_SIZE = 1
 SLEEP_INTERVAL = 0.05
 TIMEOUT_INTERVAL = 0.5
 WINDOW_SIZE = 7
+timeouts = 0
 
 # Shared resources across threads
 base = 0
@@ -66,6 +67,7 @@ def send(sock, filename):
 
     # Start the receiver thread
     _thread.start_new_thread(receive, (sock,))
+    timeouts = 0
 
     while base < num_packets:
         mutex.acquire()
@@ -90,7 +92,8 @@ def send(sock, filename):
 
         if send_timer.timeout():
             # Looks like we timed out
-            print('Timeout')
+            timouts = timeouts + 1
+            print('Timeout', timeouts)
             send_timer.stop();
             next_to_send = base
         else:
