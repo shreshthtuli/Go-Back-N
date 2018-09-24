@@ -76,7 +76,7 @@ def send(sock, filename):
         while next_to_send < base + window_size:
             print('Sending packet', next_to_send)
             print('Sending to ', RECEIVER_ADDR)
-            udt.send(packets[next_to_send], sock, RECEIVER_ADDR)
+            udt.send(packets[next_to_send], sock, RECEIVER_ADDR, loss)
             next_to_send += 1
 
         # Start the timer
@@ -104,7 +104,7 @@ def send(sock, filename):
         mutex.release()
 
     # Send empty packet as sentinel
-    udt.send(packet.make_empty(), sock, RECEIVER_ADDR)
+    udt.send(packet.make_empty(), sock, RECEIVER_ADDR, loss)
     file.close()
     
 # Receive thread
@@ -144,7 +144,7 @@ def receive(sock):
                 print('Count : ', expected_num)
                 print('Sending ACK', expected_num)
                 pkt = packet.make(expected_num, 1)
-                udt.send(pkt, sock, addr)
+                udt.send(pkt, sock, addr, loss)
                 expected_num += 1
                 file.write(data)
                 mutex.release()
@@ -153,7 +153,7 @@ def receive(sock):
                 print('Did not get expected packet', expected_num)
                 print('Sending ACK', expected_num - 1)
                 pkt = packet.make(expected_num - 1, 1)
-                udt.send(pkt, sock, addr)
+                udt.send(pkt, sock, addr, loss)
                 mutex.release()
 
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     filename = sys.argv[3]
     writefilename = sys.argv[4]
-    # loss = int(sys.argv[5])
+    loss = int(sys.argv[5])
     
     send(sock, filename)
     sock.close()
