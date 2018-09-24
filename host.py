@@ -161,7 +161,7 @@ if __name__ == '__main__':
         RECEIVER_ADDR = ('localhost', 1200)
         SENDER_ADDR = ('localhost', 8080)
 
-    WINDOW_SIZE = sys.argv[2]
+    WINDOW_SIZE = int(sys.argv[2])
     
     print(SENDER_ADDR);
     sock.bind(SENDER_ADDR)
