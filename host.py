@@ -6,7 +6,7 @@ Authors:
     - Samarth Aggarwal
 
 Usage-
-    python3 host.py 0_or_1 file_to_send file_to_write
+    python3 host.py 0_or_1 window_size file_to_send file_to_write
     
 '''
 import packet
@@ -157,12 +157,14 @@ if __name__ == '__main__':
     if(sys.argv[1] == '1'):
         RECEIVER_ADDR = ('localhost', 1200)
         SENDER_ADDR = ('localhost', 8080)
+
+    WINDOW_SIZE = sys.argv[2]
     
     print(SENDER_ADDR);
     sock.bind(SENDER_ADDR)
 
-    filename = sys.argv[2]
-    writefilename = sys.argv[3]
+    filename = sys.argv[3]
+    writefilename = sys.argv[4]
 
     send(sock, filename)
     sock.close()
