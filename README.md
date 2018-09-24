@@ -24,3 +24,10 @@ to view active tmux sessions:
 10) tmux list-sessions
 (should not show any session after closing all)
 ```
+
+# mininet commands
+```
+python3 host.py 0 README.md a.txt
+
+python3 host.py 1 README.md a.txt
+```
