@@ -28,22 +28,13 @@ class LinearTopo( Topo ):
         # Initialize topology
         Topo.__init__( self )
 
-        hosts = []
-        switches = []
-
-        for x in range(0, 2):
-
-            # Add hosts and switches
-            hosts.append(self.addHost( 'h%s' % (x+1) ))
-            switches.append(self.addSwitch( 's%s' % (x+1) ))
-
-            # Add links in linear topology
-
-            # Connecting hosts to switches
-            self.addLink(hosts[x], switches[x])
-            # Connecting switches in linear order
-            if(x > 0):
-                self.addLink(switches[x-1], switches[x]) 
+        h1 = self.addHost('h1')
+        h2 = self.addHost('h2')
+        s1 = self.addSwitch('s1')
+        s2 = self.addSwitch('s2')
+        self.addLink(h1, s1)
+        self.addLink(h2, s2)
+        self.addLink(s2, s2)
 
 topos = { 
  'linear': ( lambda: LinearTopo() ),
