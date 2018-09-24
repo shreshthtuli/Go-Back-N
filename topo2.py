@@ -48,4 +48,7 @@ if __name__ == '__main__':
     net.pingAll()
     h1 = net.get('h1')
     h2 = net.get('h2')
-    h1.cmd('tmux pyhton3 host.py 0 README.md a.txt')
+    result1 = h1.cmd('time python3 host.py 0 README.md a.txt')
+    result2 = h2.cmd('time python3 host.py 1 README.md a.txt')
+    print result1
+    print result2
