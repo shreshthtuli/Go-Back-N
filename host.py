@@ -68,6 +68,7 @@ def send(sock, filename):
 
     # Start the receiver thread
     _thread.start_new_thread(receive, (sock,))
+    global timeouts
     timeouts = 0
 
     while base < num_packets:
@@ -112,6 +113,7 @@ def receive(sock):
     global mutex
     global base
     global send_timer
+    global timeouts
 
     try:
         file = open(writefilename, 'wb')
@@ -127,6 +129,9 @@ def receive(sock):
         print('Got packet with address = ',addr)
 
         # If we get an ACK for the first in-flight packet
+        if(len(pkt) == 0):
+            print('Number of Timeouts', timeouts)
+            print('Last got ack', expected_num-1)
         if(ack >= 1):
             print('Got ACK', seq_num)
             if (seq_num >= base):
