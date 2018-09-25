@@ -15,8 +15,12 @@ delays=[0,3,5]
 fig, ax1 = plt.subplots()
 ax2 = ax1.twinx()
 
-ax1.plot(delays, th[0:3], 'g-')
-ax2.plot(delays, latency[0:3], 'b-')
+ax1.plot(delays, th[0:3], 'r-', alpha=0.3)
+ax1.plot(delays, th[3:6], 'r-', alpha=0.7)
+ax1.plot(delays, th[6:9], 'r-', alpha=1)
+ax2.plot(delays, latency[0:3], 'b-', alpha=0.3)
+ax2.plot(delays, latency[3:6], 'b-', alpha=0.7)
+ax2.plot(delays, latency[6:9], 'b-', alpha=1)
 
 ax1.set_xlabel('Delay (in ms)')
 ax1.set_ylabel('Throughput (in KBps)', color='g')
